@@ -5,8 +5,7 @@ import com.gvargame.server.modules.simplebattle.PlayersArray;
 import com.gvargame.server.modules.simplebattle.Tick;
 import com.gvargame.server.modules.simplebattle.packet.PacketCreator;
 import com.gvargame.server.modules.simplebattle.packet.PacketId;
-import com.gvargame.server.modules.simplebattle.packetprocess2.IPacketProcessCallback;
-import com.gvargame.server.modules.simplebattle.packetprocess2.WrongPacketPacketProcess;
+import com.gvargame.server.modules.simplebattle.packetprocess2.*;
 import com.pro100kryto.server.module.IModuleConnectionSafe;
 import com.pro100kryto.server.module.Module;
 import com.pro100kryto.server.modules.packetpool.connection.IPacketPoolModuleConnection;
@@ -21,6 +20,7 @@ import com.pro100kryto.server.utils.datagram.packets.IPacket;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.jetbrains.annotations.Nullable;
 
+import javax.vecmath.Vector3f;
 import java.util.Objects;
 
 public class SimpleBattleModule extends Module implements IPacketProcessCallback {
@@ -49,10 +49,22 @@ public class SimpleBattleModule extends Module implements IPacketProcessCallback
         senderModuleConnection = initModuleConnection(settings.getOrDefault("sender-module-name", "sender"));
         receiverModuleConnection = initModuleConnection(settings.getOrDefault("receiver-module-name", "receiver"));
 
-        playersArray = new PlayersArray();
+        final Vector3f[] spawnPoints = new Vector3f[2];
+        spawnPoints[0] = new Vector3f(0,10,10);
+        spawnPoints[1] = new Vector3f(10,10,10);
+        /*
+        {
+            final String spawnPointsStr = settings.getOrDefault("battle-spawn-points", "[(0, 10, 10),(10, 10, 10)]");
+            final String[] match = spawnPointsStr.matches()
+            spawnPoints = new Vector3f[]
+        }
+        */
 
         packetIdPacketProcessMap = new IntObjectHashMap<>();
         packetIdPacketProcessMap.put(PacketId.Client.WRONG, new WrongPacketPacketProcess());
+        packetIdPacketProcessMap.put(PacketId.Client.BODY_POS, new UpdateBodyPositionPacketProcess(this, logger));
+        packetIdPacketProcessMap.put(PacketId.Client.GUN_POS, new UpdateGunPositionPacketProcess(this, logger));
+        packetIdPacketProcessMap.put(PacketId.Client.SPAWN_REQ, new SpawnRequestPacketProcess(this, logger, spawnPoints));
 
         final int maxProcesses = Integer.parseInt(settings.getOrDefault("max-processes", "256"));
         processesPool = new ObjectPool<BattleSimpleProcess>(maxProcesses) {
@@ -63,6 +75,8 @@ public class SimpleBattleModule extends Module implements IPacketProcessCallback
         };
         processesPool.refill();
         processor = new ProcessorThreadPool<>(maxProcesses);
+
+        playersArray = new PlayersArray();
 
         stepTickMap = new IntObjectHashMap<>(2);
         stepTickMap.put(0, this::tick0);

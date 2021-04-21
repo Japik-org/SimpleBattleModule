@@ -4,6 +4,8 @@ import com.gvargame.server.modules.simplebattle.MsgErrorCode;
 import com.gvargame.server.modules.simplebattle.ProcedureIteratePlayers;
 import com.pro100kryto.server.utils.datagram.packets.DataCreator;
 
+import javax.vecmath.Vector3f;
+
 public final class PacketCreator {
     private static final ProcedureIteratePlayers iteratePlayers
             = new ProcedureIteratePlayers(3300); // 30 players aprox
@@ -26,5 +28,12 @@ public final class PacketCreator {
 
     public static ProcedureIteratePlayers getIteratePlayers() {
         return iteratePlayers;
+    }
+
+    public static void confirmRespawn(DataCreator creator, Vector3f spawnPoint){
+        setHeader(creator, PacketId.Server.SPAWN);
+        creator.write(spawnPoint.x);
+        creator.write(spawnPoint.y);
+        creator.write(spawnPoint.z);
     }
 }

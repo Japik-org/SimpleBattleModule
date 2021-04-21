@@ -8,6 +8,7 @@ public class Player {
     private final int connId;
     private final long userId;
     private final String nickname;
+    private float hp = -1;
     private Vector3f bodyPos;
     private Vector3f bodySpeed;
     private Vector3f bodyAccel;
@@ -138,5 +139,26 @@ public class Player {
 
     public void setGunRotAccel(Vector3f gunRotAccel) {
         this.gunRotAccel = gunRotAccel;
+    }
+
+    public void respawn(final Vector3f spawnPoint){
+        setBodyPos(spawnPoint);
+        setBodySpeed(Vector3f.ZERO);
+        setBodyAccel(Vector3f.ZERO);
+        setBodyAngle(Vector3f.ZERO);
+        setBodyRotSpeed(Vector3f.ZERO);
+        setBodyRotAccel(Vector3f.ZERO);
+        setGunRotSpeed(Vector3f.ZERO);
+        setGunRotAccel(Vector3f.ZERO);
+        setGunAngle(Vector3f.ZERO);
+        hp = 100;
+    }
+
+    public float getHp() {
+        return hp;
+    }
+
+    public float damage(float amount){
+        return hp-=amount;
     }
 }
