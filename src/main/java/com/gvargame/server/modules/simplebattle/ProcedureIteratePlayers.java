@@ -29,6 +29,8 @@ public class ProcedureIteratePlayers implements Procedure<Player> {
     public void value(final Player player) {
         dataCreatorsPlayerPos[creatorSelectedPlayerPos].write(player.getConnId());
 
+        player.getLocker().lock();
+
         writeVector(player.getBodyPos());
         writeVector(player.getBodySpeed());
         writeVector(player.getBodyAccel());
@@ -40,6 +42,8 @@ public class ProcedureIteratePlayers implements Procedure<Player> {
         writeVector(player.getGunAngle());
         writeVector(player.getGunRotSpeed());
         writeVector(player.getGunRotAccel());
+
+        player.getLocker().unlock();
 
         playersCountInProcess++;
     }

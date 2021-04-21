@@ -19,10 +19,15 @@ public class RequestPlayerPositionsPacketProcess extends PacketProcess{
         // new packet
         final IPacketInProcess newPacket = callback.getPacketPool().getNextPacket();
         newPacket.setEndPoint(new EndPoint(packet.getEndPoint()));
-        final DataCreator creator = newPacket.getDataCreator();
+        try {
+            final DataCreator creator = newPacket.getDataCreator();
 
-        PacketCreator.playerPositions(creator);
+            PacketCreator.playerPositions(creator);
 
-        callback.getSender().sendPacketAndRecycle(newPacket);
+            callback.getSender().sendPacketAndRecycle(newPacket);
+            return;
+        } catch (NullPointerException ignored){
+        }
+        newPacket.recycle();
     }
 }
