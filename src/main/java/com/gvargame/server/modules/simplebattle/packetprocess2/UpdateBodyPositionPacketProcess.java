@@ -10,7 +10,7 @@ import javax.vecmath.Vector3f;
 public class UpdateBodyPositionPacketProcess extends PacketProcess{
 
 
-    protected UpdateBodyPositionPacketProcess(IPacketProcessCallback callback, ILogger logger) {
+    public UpdateBodyPositionPacketProcess(IPacketProcessCallback callback, ILogger logger) {
         super(callback, logger);
     }
 
@@ -25,13 +25,11 @@ public class UpdateBodyPositionPacketProcess extends PacketProcess{
         final Vector3f angleAccel = new Vector3f(reader.readFloat(), reader.readFloat(), reader.readFloat());
 
         // save
-        player.getLocker().lock();
-        player.setPosBody(pos);
-        player.setPosBodySpeed(posSpeed);
-        player.setPosBodyAccel(posAccel);
-        player.setRotBody(angle);
-        player.setRotBodySpeed(angleSpeed);
-        player.setRotBodyAccel(angleAccel);
-        player.getLocker().unlock();
+        player.setBodyPos(pos);
+        player.setBodySpeed(posSpeed);
+        player.setBodyAccel(posAccel);
+        player.setBodyAngle(angle);
+        player.setBodyRotSpeed(angleSpeed);
+        player.setBodyRotAccel(angleAccel);
     }
 }

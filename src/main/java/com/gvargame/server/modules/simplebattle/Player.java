@@ -8,15 +8,15 @@ public class Player {
     private final int connId;
     private final long userId;
     private final String nickname;
-    private Vector3f posBody;
-    private Vector3f posBodySpeed;
-    private Vector3f posBodyAccel;
-    private Vector3f rotBody;
-    private Vector3f rotBodySpeed;
-    private Vector3f rotBodyAccel;
-    private Vector3f rotGun;
-    private Vector3f rotGunSpeed;
-    private Vector3f rotGunAccel;
+    private Vector3f bodyPos;
+    private Vector3f bodySpeed;
+    private Vector3f bodyAccel;
+    private Vector3f bodyAngle;
+    private Vector3f bodyRotSpeed;
+    private Vector3f bodyRotAccel;
+    private Vector3f gunAngle;
+    private Vector3f gunRotSpeed;
+    private Vector3f gunRotAccel;
 
     private final ReentrantLock locker = new ReentrantLock();
 
@@ -25,45 +25,45 @@ public class Player {
     }
 
     public Player(int connId, long userId, String nickname,
-                  final Vector3f posBody, final Vector3f rotBody, final Vector3f rotGun) {
+                  final Vector3f bodyPos, final Vector3f bodyAngle, final Vector3f gunAngle) {
         this.connId = connId;
         this.userId = userId;
         this.nickname = nickname;
-        this.posBody = posBody;
-        this.rotBody = rotBody;
-        this.rotGun = rotGun;
+        this.bodyPos = bodyPos;
+        this.bodyAngle = bodyAngle;
+        this.gunAngle = gunAngle;
     }
 
     public final ReentrantLock getLocker() {
         return locker;
     }
 
-    public Vector3f getPosBody() {
-        return posBody;
+    public Vector3f getBodyPos() {
+        return bodyPos;
     }
 
-    public void setPosBody(final Vector3f posBody) {
-        this.posBody = posBody;
+    public void setBodyPos(final Vector3f bodyPos) {
+        this.bodyPos = bodyPos;
     }
 
-    public Vector3f getRotBody() {
-        return rotBody;
+    public Vector3f getBodyAngle() {
+        return bodyAngle;
     }
 
-    public void setRotBody(final Vector3f rotBody) {
-        this.rotBody = rotBody;
+    public void setBodyAngle(final Vector3f bodyAngle) {
+        this.bodyAngle = bodyAngle;
     }
 
-    public Vector3f getRotGun() {
-        return rotGun;
+    public Vector3f getGunAngle() {
+        return gunAngle;
     }
 
-    public void setRotGun(final Vector3f rotGun) {
-        this.rotGun = rotGun;
+    public void setGunAngle(final Vector3f gunAngle) {
+        this.gunAngle = gunAngle;
     }
 
     public void addPosition(final Tuple3f addV){
-        posBody.add(addV);
+        bodyPos.add(addV);
     }
 
     /*
@@ -84,36 +84,36 @@ public class Player {
         return connId;
     }
 
-    public Vector3f getPosBodySpeed() {
-        return posBodySpeed;
+    public Vector3f getBodySpeed() {
+        return bodySpeed;
     }
 
-    public void setPosBodySpeed(Vector3f posBodySpeed) {
-        this.posBodySpeed = posBodySpeed;
+    public void setBodySpeed(Vector3f bodySpeed) {
+        this.bodySpeed = bodySpeed;
     }
 
-    public Vector3f getPosBodyAccel() {
-        return posBodyAccel;
+    public Vector3f getBodyAccel() {
+        return bodyAccel;
     }
 
-    public void setPosBodyAccel(Vector3f posBodyAccel) {
-        this.posBodyAccel = posBodyAccel;
+    public void setBodyAccel(Vector3f bodyAccel) {
+        this.bodyAccel = bodyAccel;
     }
 
-    public Vector3f getRotBodySpeed() {
-        return rotBodySpeed;
+    public Vector3f getBodyRotSpeed() {
+        return bodyRotSpeed;
     }
 
-    public void setRotBodySpeed(Vector3f rotBodySpeed) {
-        this.rotBodySpeed = rotBodySpeed;
+    public void setBodyRotSpeed(Vector3f bodyRotSpeed) {
+        this.bodyRotSpeed = bodyRotSpeed;
     }
 
-    public Vector3f getRotGunSpeed() {
-        return rotGunSpeed;
+    public Vector3f getGunRotSpeed() {
+        return gunRotSpeed;
     }
 
-    public void setRotGunSpeed(Vector3f rotGunSpeed) {
-        this.rotGunSpeed = rotGunSpeed;
+    public void setGunRotSpeed(Vector3f gunRotSpeed) {
+        this.gunRotSpeed = gunRotSpeed;
     }
 
     public final long getUserId() {
@@ -124,19 +124,19 @@ public class Player {
         return nickname;
     }
 
-    public Vector3f getRotBodyAccel() {
-        return rotBodyAccel;
+    public Vector3f getBodyRotAccel() {
+        return bodyRotAccel;
     }
 
-    public void setRotBodyAccel(Vector3f rotBodyAccel) {
-        this.rotBodyAccel = rotBodyAccel;
+    public void setBodyRotAccel(Vector3f bodyRotAccel) {
+        this.bodyRotAccel = bodyRotAccel;
     }
 
-    public Vector3f getRotGunAccel() {
-        return rotGunAccel;
+    public Vector3f getGunRotAccel() {
+        return gunRotAccel;
     }
 
-    public void setRotGunAccel(Vector3f rotGunAccel) {
-        this.rotGunAccel = rotGunAccel;
+    public void setGunRotAccel(Vector3f gunRotAccel) {
+        this.gunRotAccel = gunRotAccel;
     }
 }

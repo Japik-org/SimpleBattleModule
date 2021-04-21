@@ -29,17 +29,17 @@ public class ProcedureIteratePlayers implements Procedure<Player> {
     public void value(final Player player) {
         dataCreatorsPlayerPos[creatorSelectedPlayerPos].write(player.getConnId());
 
-        writeVector(player.getPosBody());
-        writeVector(player.getPosBodySpeed());
-        writeVector(player.getPosBodyAccel());
+        writeVector(player.getBodyPos());
+        writeVector(player.getBodySpeed());
+        writeVector(player.getBodyAccel());
 
-        writeVector(player.getRotBody());
-        writeVector(player.getRotBodySpeed());
-        writeVector(player.getRotBodyAccel());
+        writeVector(player.getBodyAngle());
+        writeVector(player.getBodyRotSpeed());
+        writeVector(player.getBodyRotAccel());
 
-        writeVector(player.getRotGun());
-        writeVector(player.getRotGunSpeed());
-        writeVector(player.getRotGunAccel());
+        writeVector(player.getGunAngle());
+        writeVector(player.getGunRotSpeed());
+        writeVector(player.getGunRotAccel());
 
         playersCountInProcess++;
     }
