@@ -10,6 +10,8 @@ import com.pro100kryto.server.utils.datagram.packets.EndPoint;
 import com.pro100kryto.server.utils.datagram.packets.IPacket;
 import com.pro100kryto.server.utils.datagram.packets.IPacketInProcess;
 
+import javax.vecmath.Vector3f;
+
 public abstract class PacketProcess implements IPacketProcess {
     protected final IPacketProcessCallback callback;
     protected final ILogger logger;
@@ -68,4 +70,10 @@ public abstract class PacketProcess implements IPacketProcess {
     }
 
     public abstract void processPacket(IPacket packet, DataReader reader, Player player) throws Throwable;
+
+    // ---------------
+
+    public Vector3f readVector3f(final DataReader reader){
+        return new Vector3f(reader.readFloat(), reader.readFloat(), reader.readFloat());
+    }
 }

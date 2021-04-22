@@ -17,10 +17,15 @@ public class KillSelfPacketProcess extends PacketProcess{
         if (player.getHp()<=0) return;
         final IPacketInProcess newPacket = callback.getPacketPool().getNextPacket();
         newPacket.setEndPoint(new EndPoint(packet.getEndPoint()));
-        final DataCreator creator = newPacket.getDataCreator();
+        try {
+            final DataCreator creator = newPacket.getDataCreator();
 
-        PacketCreator.dead(creator);
+            PacketCreator.dead(creator);
 
-        callback.getSender().sendPacketAndRecycle(newPacket);
+            callback.getSender().sendPacketAndRecycle(newPacket);
+            return;
+        } catch (NullPointerException ignored){
+        }
+        newPacket.recycle();
     }
 }

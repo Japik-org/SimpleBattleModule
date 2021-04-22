@@ -17,12 +17,12 @@ public class UpdateBodyPositionPacketProcess extends PacketProcess{
     @Override
     public void processPacket(IPacket packet, final DataReader reader, Player player) throws Throwable {
         // read
-        final Vector3f pos = new Vector3f(reader.readFloat(), reader.readFloat(), reader.readFloat());
-        final Vector3f posSpeed = new Vector3f(reader.readFloat(), reader.readFloat(), reader.readFloat());
-        final Vector3f posAccel = new Vector3f(reader.readFloat(), reader.readFloat(), reader.readFloat());
-        final Vector3f angle = new Vector3f(reader.readFloat(), reader.readFloat(), reader.readFloat());
-        final Vector3f angleSpeed = new Vector3f(reader.readFloat(), reader.readFloat(), reader.readFloat());
-        final Vector3f angleAccel = new Vector3f(reader.readFloat(), reader.readFloat(), reader.readFloat());
+        final Vector3f pos          = readVector3f(reader);
+        final Vector3f posSpeed     = readVector3f(reader);
+        final Vector3f posAccel     = readVector3f(reader);
+        final Vector3f angle        = readVector3f(reader);
+        final Vector3f angleSpeed   = readVector3f(reader);
+        final Vector3f angleAccel   = readVector3f(reader);
 
         // save
         player.setBodyPos(pos);
