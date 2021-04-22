@@ -36,4 +36,11 @@ public final class PacketCreator {
         creator.write(spawnPoint.y);
         creator.write(spawnPoint.z);
     }
+
+    public static void dead(DataCreator creator){
+        setHeader(creator, PacketId.Server.DEAD);
+        // no content
+    }
+
+
 }
