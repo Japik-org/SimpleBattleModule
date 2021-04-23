@@ -3,7 +3,10 @@ package com.gvargame.server.modules.simplebattle.packetprocess2;
 import com.gvargame.server.modules.simplebattle.Player;
 import com.gvargame.server.modules.simplebattle.packet.PacketCreator;
 import com.pro100kryto.server.logger.ILogger;
-import com.pro100kryto.server.utils.datagram.packets.*;
+import com.pro100kryto.server.utils.datagram.packets.DataCreator;
+import com.pro100kryto.server.utils.datagram.packets.DataReader;
+import com.pro100kryto.server.utils.datagram.packets.IPacket;
+import com.pro100kryto.server.utils.datagram.packets.IPacketInProcess;
 
 import javax.vecmath.Vector3f;
 import java.util.Random;
@@ -28,7 +31,7 @@ public class SpawnRequestPacketProcess extends PacketProcess{
         player.respawn(spawnPoint);
 
         final IPacketInProcess newPacket = callback.getPacketPool().getNextPacket();
-        newPacket.setEndPoint(new EndPoint(packet.getEndPoint()));
+        newPacket.setEndPoint(packet.getEndPoint());
         try {
             final DataCreator creator = newPacket.getDataCreator();
 

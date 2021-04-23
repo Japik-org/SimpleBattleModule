@@ -5,17 +5,13 @@ import com.gvargame.server.modules.simplebattle.Player;
 import com.gvargame.server.modules.simplebattle.packet.PacketCreator;
 import com.pro100kryto.server.logger.ILogger;
 import com.pro100kryto.server.utils.datagram.packetprocess2.IPacketProcess;
-import com.pro100kryto.server.utils.datagram.packets.DataReader;
-import com.pro100kryto.server.utils.datagram.packets.EndPoint;
-import com.pro100kryto.server.utils.datagram.packets.IPacket;
-import com.pro100kryto.server.utils.datagram.packets.IPacketInProcess;
+import com.pro100kryto.server.utils.datagram.packets.*;
 
 import javax.vecmath.Vector3f;
 
 public abstract class PacketProcess implements IPacketProcess {
     protected final IPacketProcessCallback callback;
     protected final ILogger logger;
-    protected int connId;
 
     protected PacketProcess(IPacketProcessCallback callback, ILogger logger) {
         this.callback = callback;
@@ -28,6 +24,10 @@ public abstract class PacketProcess implements IPacketProcess {
 
             final DataReader dataReader = packet.getDataReader();
             final Player player = callback.getPlayersArray().getPlayer(dataReader.readInt());
+            if (!player.getEndPoint().equals(packet.getEndPoint())){
+                sendMsgError(packet.getEndPoint(), MsgErrorCode.Unauthorized);
+                return;
+            }
             try {
                 player.getLocker().lock();
             } catch (NullPointerException nullPointerException){
@@ -52,7 +52,7 @@ public abstract class PacketProcess implements IPacketProcess {
         }
     }
 
-    private void sendMsgError(final EndPoint endPoint, final MsgErrorCode code){
+    private void sendMsgError(final IEndPoint endPoint, final MsgErrorCode code){
         try {
             final IPacketInProcess newPacket = callback.getPacketPool().getNextPacket();
             newPacket.setEndPoint(endPoint);
