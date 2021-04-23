@@ -37,10 +37,20 @@ public final class PacketCreator {
         creator.write(spawnPoint.z);
     }
 
-    public static void dead(DataCreator creator){
+    public static void dead(DataCreator creator, int connId){
         setHeader(creator, PacketId.Server.DEAD);
-        // no content
+        creator.write(connId);
     }
 
 
+    public static void shootVoid(DataCreator creator, Vector3f direction) {
+        setHeader(creator, PacketId.Server.SHOOT_VOID);
+        creator.write(direction.x, direction.y, direction.z);
+    }
+
+    public static void shoot(DataCreator creator, Vector3f direction, Vector3f intersection) {
+        setHeader(creator, PacketId.Server.SHOOT);
+        creator.write(direction.x, direction.y, direction.z);
+        creator.write(intersection.x, intersection.y, intersection.z);
+    }
 }

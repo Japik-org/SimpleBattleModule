@@ -8,6 +8,8 @@ public final class PacketId {
         public static final short PLAYER_POS = 3;
         public static final short SPAWN = 4;
         public static final short DEAD = 5;
+        public static final short SHOOT_VOID = 6;
+        public static final short SHOOT = 7;
     }
 
     public static final class Client{
@@ -17,5 +19,8 @@ public final class PacketId {
         public static final short GUN_POS = 3;
         public static final short SPAWN_REQ = 4;
         public static final short KILL_SELF = 5;
+        public static final short SHOOT_VOID = 6;
+        public static final short SHOOT_WALL = 7;
+        public static final short SHOOT_PLAYER = 8;
     }
 }

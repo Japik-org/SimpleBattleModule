@@ -66,6 +66,9 @@ public class SimpleBattleModule extends Module implements IPacketProcessCallback
         packetIdPacketProcessMap.put(PacketId.Client.GUN_POS, new UpdateGunPositionPacketProcess(this, logger));
         packetIdPacketProcessMap.put(PacketId.Client.SPAWN_REQ, new SpawnRequestPacketProcess(this, logger, spawnPoints));
         packetIdPacketProcessMap.put(PacketId.Client.KILL_SELF, new KillSelfPacketProcess(this, logger));
+        packetIdPacketProcessMap.put(PacketId.Client.SHOOT_VOID, new ShootVoidPacketProcess(this, logger));
+        packetIdPacketProcessMap.put(PacketId.Client.SHOOT_WALL, new ShootWallPacketProcess(this, logger));
+        packetIdPacketProcessMap.put(PacketId.Client.SHOOT_PLAYER, new ShootPlayerPacketProcess(this, logger));
 
 
         final int maxProcesses = Integer.parseInt(settings.getOrDefault("max-processes", "256"));
