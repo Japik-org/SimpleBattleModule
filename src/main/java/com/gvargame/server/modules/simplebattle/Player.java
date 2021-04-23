@@ -1,13 +1,17 @@
 package com.gvargame.server.modules.simplebattle;
 
+import com.pro100kryto.server.utils.datagram.packets.IEndPoint;
+
 import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Player {
     private final int connId;
-    private final long userId;
     private final String nickname;
+    private final ConnectionRoles connectionRoles;
+    private final IEndPoint endPoint;
+
     private float hp = -1;
     private Vector3f bodyPos;
     private Vector3f bodySpeed;
@@ -21,15 +25,16 @@ public class Player {
 
     private final ReentrantLock locker = new ReentrantLock();
 
-    public Player(int connId, long userId, String nickname) {
-        this(connId, userId, nickname, Vector3f.ZERO, Vector3f.ZERO, Vector3f.ZERO);
+    public Player(int connId, String nickname, ConnectionRoles connectionRoles, IEndPoint endPoint) {
+        this(connId, nickname, connectionRoles, endPoint, Vector3f.ZERO, Vector3f.ZERO, Vector3f.ZERO);
     }
 
-    public Player(int connId, long userId, String nickname,
+    public Player(int connId, String nickname, ConnectionRoles connectionRoles, IEndPoint endPoint,
                   final Vector3f bodyPos, final Vector3f bodyAngle, final Vector3f gunAngle) {
         this.connId = connId;
-        this.userId = userId;
         this.nickname = nickname;
+        this.connectionRoles = connectionRoles;
+        this.endPoint = endPoint;
         this.bodyPos = bodyPos;
         this.bodyAngle = bodyAngle;
         this.gunAngle = gunAngle;
@@ -117,10 +122,6 @@ public class Player {
         this.gunRotSpeed = gunRotSpeed;
     }
 
-    public final long getUserId() {
-        return userId;
-    }
-
     public final String getNickname() {
         return nickname;
     }
@@ -160,5 +161,13 @@ public class Player {
 
     public float damage(float amount){
         return hp-=amount;
+    }
+
+    public ConnectionRoles getConnectionRoles() {
+        return connectionRoles;
+    }
+
+    public IEndPoint getEndPoint() {
+        return endPoint;
     }
 }
