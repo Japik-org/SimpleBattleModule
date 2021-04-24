@@ -4,6 +4,7 @@ import com.pro100kryto.server.utils.datagram.packets.DataCreator;
 import org.eclipse.collections.api.block.procedure.Procedure;
 
 import javax.vecmath.Vector3f;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ProcedureIteratePlayers implements Procedure<Player> {
     private final DataCreator[] dataCreatorsPlayerPos;
@@ -13,6 +14,8 @@ public class ProcedureIteratePlayers implements Procedure<Player> {
 
     private byte[] rawBytesPlayerPos;
     private int posBytesPlayerPos, lenBytesPlayerPos;
+
+    private final ReentrantLock locker = new ReentrantLock();
 
 
     public ProcedureIteratePlayers(int bufferSize) {
@@ -49,8 +52,11 @@ public class ProcedureIteratePlayers implements Procedure<Player> {
     }
 
     public synchronized void startNewIteration(){
+        locker.lock();
         playersCountInProcess = 0;
         creatorSelectedPlayerPos = (1+ creatorSelectedPlayerPos)%2;
+        dataCreatorsPlayerPos[creatorSelectedPlayerPos].reset();
+        dataCreatorsPlayerPos[creatorSelectedPlayerPos].write((int)0);
     }
 
     public synchronized void endIteration(){
@@ -59,6 +65,7 @@ public class ProcedureIteratePlayers implements Procedure<Player> {
         rawBytesPlayerPos = dataCreatorsPlayerPos[creatorSelectedPlayerPos].getDataContainer().getRaw();
         posBytesPlayerPos = dataCreatorsPlayerPos[creatorSelectedPlayerPos].getPosition();
         lenBytesPlayerPos = dataCreatorsPlayerPos[creatorSelectedPlayerPos].getDataLength();
+        locker.unlock();
     }
 
     private void writeVector(final Vector3f v3f){
@@ -74,5 +81,9 @@ public class ProcedureIteratePlayers implements Procedure<Player> {
                 rawBytesPlayerPos,
                 posBytesPlayerPos,
                 lenBytesPlayerPos);
+    }
+
+    public int getPlayersCount() {
+        return playersCount;
     }
 }

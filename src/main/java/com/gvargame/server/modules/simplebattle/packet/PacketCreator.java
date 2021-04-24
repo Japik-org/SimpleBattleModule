@@ -23,6 +23,7 @@ public final class PacketCreator {
 
     public static void playerPositions(DataCreator creator){
         setHeader(creator, PacketId.Server.PLAYER_POS);
+        creator.write(iteratePlayers.getPlayersCount());
         iteratePlayers.writePlayerPositions(creator);
     }
 

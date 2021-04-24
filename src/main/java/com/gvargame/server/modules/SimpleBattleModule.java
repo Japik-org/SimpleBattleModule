@@ -2,6 +2,7 @@ package com.gvargame.server.modules;
 
 import com.gvargame.server.modules.simplebattle.BattleSimpleProcess;
 import com.gvargame.server.modules.simplebattle.PlayersArray;
+import com.gvargame.server.modules.simplebattle.ProcedureIteratePlayers;
 import com.gvargame.server.modules.simplebattle.Tick;
 import com.gvargame.server.modules.simplebattle.packet.PacketCreator;
 import com.gvargame.server.modules.simplebattle.packet.PacketId;
@@ -126,7 +127,12 @@ public class SimpleBattleModule extends Module implements IPacketProcessCallback
 
     // helper thread
     private void tick1() throws Throwable{
-        playersArray.iteratePlayers(PacketCreator.getIteratePlayers());
+        final ProcedureIteratePlayers iteratePlayers = PacketCreator.getIteratePlayers();
+        iteratePlayers.startNewIteration();
+        try {
+            playersArray.iteratePlayers(iteratePlayers);
+        } catch (Throwable ignored){}
+        iteratePlayers.endIteration();
     }
 
     // ---------- callback
