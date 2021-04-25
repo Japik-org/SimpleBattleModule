@@ -34,9 +34,11 @@ public class ShootVoidPacketProcess extends PacketProcess{
                 newPacket.setEndPoint(player.getEndPoint());
                 sender.sendPacket(newPacket);
             });
-        } catch (NullPointerException ignored){
-        }
 
-        newPacket.recycle();
+            newPacket.recycle();
+        } catch (Throwable throwable){
+            newPacket.recycle();
+            throw throwable;
+        }
     }
 }

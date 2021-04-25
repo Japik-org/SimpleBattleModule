@@ -30,8 +30,11 @@ public class KillSelfPacketProcess extends PacketProcess{
                 newPacket.setEndPoint(packet.getEndPoint());
                 sender.sendPacket(newPacket);
             });
-        } catch (NullPointerException ignored){
+
+            newPacket.recycle();
+        } catch (Throwable throwable){
+            newPacket.recycle();
+            throw throwable;
         }
-        newPacket.recycle();
     }
 }

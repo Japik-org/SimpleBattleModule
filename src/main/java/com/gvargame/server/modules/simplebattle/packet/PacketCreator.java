@@ -33,9 +33,7 @@ public final class PacketCreator {
 
     public static void confirmRespawn(DataCreator creator, Vector3f spawnPoint){
         setHeader(creator, PacketId.Server.SPAWN);
-        creator.write(spawnPoint.x);
-        creator.write(spawnPoint.y);
-        creator.write(spawnPoint.z);
+        creator.write(spawnPoint.x, spawnPoint.y, spawnPoint.z);
     }
 
     public static void dead(DataCreator creator, int connId){

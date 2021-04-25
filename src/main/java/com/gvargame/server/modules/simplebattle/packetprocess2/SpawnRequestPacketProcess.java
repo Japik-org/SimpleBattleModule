@@ -38,9 +38,9 @@ public class SpawnRequestPacketProcess extends PacketProcess{
             PacketCreator.confirmRespawn(creator, spawnPoint);
 
             callback.getSender().sendPacketAndRecycle(newPacket);
-            return;
-        } catch (NullPointerException ignored){
+        } catch (Throwable throwable){
+            newPacket.recycle();
+            throw throwable;
         }
-        newPacket.recycle();
     }
 }

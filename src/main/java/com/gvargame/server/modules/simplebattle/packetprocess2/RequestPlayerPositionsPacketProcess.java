@@ -28,9 +28,9 @@ public class RequestPlayerPositionsPacketProcess extends PacketProcess{
             PacketCreator.playerPositions(creator);
 
             callback.getSender().sendPacketAndRecycle(newPacket);
-            return;
-        } catch (NullPointerException ignored){
+        } catch (Throwable throwable){
+            newPacket.recycle();
+            throw throwable;
         }
-        newPacket.recycle();
     }
 }
