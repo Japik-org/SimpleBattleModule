@@ -7,6 +7,9 @@ import com.gvargame.server.modules.simplebattle.Tick;
 import com.gvargame.server.modules.simplebattle.packet.PacketCreator;
 import com.gvargame.server.modules.simplebattle.packet.PacketId;
 import com.gvargame.server.modules.simplebattle.packetprocess2.*;
+import com.pro100kryto.server.StartStopStatus;
+import com.pro100kryto.server.logger.ILogger;
+import com.pro100kryto.server.module.AModuleConnection;
 import com.pro100kryto.server.module.IModuleConnectionSafe;
 import com.pro100kryto.server.module.Module;
 import com.pro100kryto.server.modules.packetpool.connection.IPacketPoolModuleConnection;
@@ -91,6 +94,8 @@ public class SimpleBattleModule extends Module implements IPacketProcessCallback
 
         final int counterMaxValue = Integer.parseInt(settings.getOrDefault("", "1"));
         tickCounter = new IntCounterLocked(0, 0, counterMaxValue);
+
+        moduleConnection = new SimpleBattleModuleConnection(logger, name, type);
     }
 
     @Override
@@ -157,5 +162,19 @@ public class SimpleBattleModule extends Module implements IPacketProcessCallback
     @Override
     public PlayersArray getPlayersArray() {
         return playersArray;
+    }
+
+
+
+    private class SimpleBattleModuleConnection extends AModuleConnection{
+
+        public SimpleBattleModuleConnection(ILogger logger, String moduleName, String moduleType) {
+            super(logger, moduleName, moduleType);
+        }
+
+        @Override
+        public boolean isAliveModule() {
+            return getStatus()== StartStopStatus.STARTED;
+        }
     }
 }
