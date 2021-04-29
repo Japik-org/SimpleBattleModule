@@ -10,6 +10,7 @@ public final class PacketId {
         public static final short DEAD = 5;
         public static final short SHOOT_VOID = 6;
         public static final short SHOOT = 7;
+        public static final short PLAYERS_LIST = 8;
     }
 
     public static final class Client{
@@ -22,5 +23,6 @@ public final class PacketId {
         public static final short SHOOT_VOID = 6;
         public static final short SHOOT_WALL = 7;
         public static final short SHOOT_PLAYER = 8;
+        public static final short PLAYERS_LIST = 8;
     }
 }
