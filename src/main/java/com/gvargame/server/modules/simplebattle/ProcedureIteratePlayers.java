@@ -3,26 +3,26 @@ package com.gvargame.server.modules.simplebattle;
 import com.pro100kryto.server.utils.datagram.packets.DataCreator;
 import org.eclipse.collections.api.block.procedure.Procedure;
 
-import javax.vecmath.Vector3f;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ProcedureIteratePlayers implements Procedure<Player> {
-    private final DataCreator[] dataCreatorsPlayerPos;
-    private int creatorSelectedPlayerPos = -1;
-    private volatile int playersCount = 0;
-    private int playersCountInProcess;
-
-    private byte[] rawBytesPlayerPos;
-    private int posBytesPlayerPos, lenBytesPlayerPos;
 
     private final ReentrantLock locker = new ReentrantLock();
+    private final int dataArrayLen;
+    private final IteratedPlayersData[] iteratedPlayersData;
+    private int playersDataSelectedIndex = 0;
+    private IteratedPlayersData iteratedPlayersDataSelected;
+    private IteratedPlayersData iteratedPlayersDataReady;
 
 
-    public ProcedureIteratePlayers(int bufferSize) {
-        dataCreatorsPlayerPos = new DataCreator[2];
-        dataCreatorsPlayerPos[0] = new DataCreator(bufferSize);
-        dataCreatorsPlayerPos[1] = new DataCreator(bufferSize);
-        creatorSelectedPlayerPos = 0;
+    public ProcedureIteratePlayers(int bufferSize, int buffersCount) {
+        dataArrayLen = buffersCount;
+        iteratedPlayersData = new IteratedPlayersData[dataArrayLen];
+        for (int i = 0; i < dataArrayLen; i++) {
+            iteratedPlayersData[i] = new IteratedPlayersData(bufferSize);
+        }
+        iteratedPlayersDataSelected = iteratedPlayersData[playersDataSelectedIndex];
+        iteratedPlayersDataReady = null;
     }
 
     /**
@@ -30,60 +30,34 @@ public class ProcedureIteratePlayers implements Procedure<Player> {
      */
     @Override
     public void value(final Player player) {
-        dataCreatorsPlayerPos[creatorSelectedPlayerPos].write(player.getConnId());
-
-        player.getLocker().lock();
-
-        writeVector(player.getBodyPos());
-        writeVector(player.getBodySpeed());
-        writeVector(player.getBodyAccel());
-
-        writeVector(player.getBodyAngle());
-        writeVector(player.getBodyRotSpeed());
-        writeVector(player.getBodyRotAccel());
-
-        writeVector(player.getGunAngle());
-        writeVector(player.getGunRotSpeed());
-        writeVector(player.getGunRotAccel());
-
-        player.getLocker().unlock();
-
-        playersCountInProcess++;
+        iteratedPlayersDataSelected.readPlayer(player);
     }
 
-    public synchronized void startNewIteration(){
+    public synchronized void startNewIterationAndLock(){
         locker.lock();
-        playersCountInProcess = 0;
-        creatorSelectedPlayerPos = (1+ creatorSelectedPlayerPos)%2;
-        dataCreatorsPlayerPos[creatorSelectedPlayerPos].reset();
-        dataCreatorsPlayerPos[creatorSelectedPlayerPos].write((int)0);
+        playersDataSelectedIndex = (1+playersDataSelectedIndex)% dataArrayLen;
+        iteratedPlayersDataSelected = iteratedPlayersData[playersDataSelectedIndex];
+        iteratedPlayersDataSelected.reset();
     }
 
-    public synchronized void endIteration(){
-        playersCount = playersCountInProcess;
-        dataCreatorsPlayerPos[creatorSelectedPlayerPos].close();
-        rawBytesPlayerPos = dataCreatorsPlayerPos[creatorSelectedPlayerPos].getDataContainer().getRaw();
-        posBytesPlayerPos = dataCreatorsPlayerPos[creatorSelectedPlayerPos].getPosition();
-        lenBytesPlayerPos = dataCreatorsPlayerPos[creatorSelectedPlayerPos].getDataLength();
+    public synchronized void finishIterationAndUnlock(){
+        iteratedPlayersDataSelected.finish();
+        iteratedPlayersDataReady = iteratedPlayersDataSelected;
         locker.unlock();
     }
 
-    private void writeVector(final Vector3f v3f){
-        dataCreatorsPlayerPos[creatorSelectedPlayerPos].write(v3f.x);
-        dataCreatorsPlayerPos[creatorSelectedPlayerPos].write(v3f.y);
-        dataCreatorsPlayerPos[creatorSelectedPlayerPos].write(v3f.z);
+    public synchronized void cancelIterationAndUnlock(){
+        playersDataSelectedIndex = (playersDataSelectedIndex-1)% dataArrayLen;
+        iteratedPlayersDataSelected = iteratedPlayersData[playersDataSelectedIndex];
+        locker.unlock();
     }
 
-    public synchronized void writePlayerPositions(final DataCreator creatorOut){
-        creatorOut.write(playersCount);
-        // TODO: compress data or subdivide the packet??
-        creatorOut.write(
-                rawBytesPlayerPos,
-                posBytesPlayerPos,
-                lenBytesPlayerPos);
+
+    public synchronized void writeCountAndPlayerPositions(final DataCreator creatorDataOut){
+        iteratedPlayersDataReady.writeCountAndPlayerPositions(creatorDataOut);
     }
 
     public int getPlayersCount() {
-        return playersCount;
+        return iteratedPlayersDataReady.getPlayersCount();
     }
 }

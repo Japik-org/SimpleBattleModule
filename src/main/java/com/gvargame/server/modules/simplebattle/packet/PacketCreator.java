@@ -8,7 +8,7 @@ import javax.vecmath.Vector3f;
 
 public final class PacketCreator {
     private static final ProcedureIteratePlayers iteratePlayers
-            = new ProcedureIteratePlayers(3300); // 30 players aprox
+            = new ProcedureIteratePlayers(3300, 3); // 30 players aprox
 
     protected static void setHeader(DataCreator creator, short packetId){
         creator.setPosition(PacketHeaderInfo.Server.POS_PACKET_ID);
@@ -24,7 +24,7 @@ public final class PacketCreator {
     public static void playerPositions(DataCreator creator){
         setHeader(creator, PacketId.Server.PLAYER_POS);
         creator.write(iteratePlayers.getPlayersCount());
-        iteratePlayers.writePlayerPositions(creator);
+        iteratePlayers.writeCountAndPlayerPositions(creator);
     }
 
     public static ProcedureIteratePlayers getIteratePlayers() {

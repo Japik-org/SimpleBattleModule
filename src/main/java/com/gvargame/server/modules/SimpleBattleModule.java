@@ -100,6 +100,7 @@ public class SimpleBattleModule extends Module implements IPacketProcessCallback
         stepTickMap.clear();
     }
 
+    // do you need 2 or more threads for tick
     @Override
     public void tick() throws Throwable {
         stepTickMap.get(tickCounter.getAndIncrement()/tickCounter.getMaxValue()).tick();
@@ -128,11 +129,14 @@ public class SimpleBattleModule extends Module implements IPacketProcessCallback
     // helper thread
     private void tick1() throws Throwable{
         final ProcedureIteratePlayers iteratePlayers = PacketCreator.getIteratePlayers();
-        iteratePlayers.startNewIteration();
+        iteratePlayers.startNewIterationAndLock();
         try {
             playersArray.iteratePlayers(iteratePlayers);
-        } catch (Throwable ignored){}
-        iteratePlayers.endIteration();
+            iteratePlayers.finishIterationAndUnlock();
+        } catch (Throwable throwable){
+            logger.writeException(throwable, "Error iterate players");
+            iteratePlayers.cancelIterationAndUnlock();
+        }
     }
 
     // ---------- callback
