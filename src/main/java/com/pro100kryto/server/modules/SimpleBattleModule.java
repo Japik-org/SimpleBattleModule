@@ -67,6 +67,7 @@ public class SimpleBattleModule extends Module implements IPacketProcessCallback
 
         packetIdPacketProcessMap = new IntObjectHashMap<>();
         packetIdPacketProcessMap.put(PacketId.Client.WRONG, new WrongPacketPacketProcess());
+        packetIdPacketProcessMap.put(PacketId.Client.PING, new PingPacketProcess(this, logger));
         packetIdPacketProcessMap.put(PacketId.Client.BODY_POS, new UpdateBodyPositionPacketProcess(this, logger));
         packetIdPacketProcessMap.put(PacketId.Client.GUN_POS, new UpdateGunPositionPacketProcess(this, logger));
         packetIdPacketProcessMap.put(PacketId.Client.SPAWN_REQ, new SpawnRequestPacketProcess(this, logger, spawnPoints));

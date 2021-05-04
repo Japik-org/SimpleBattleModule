@@ -69,4 +69,8 @@ public final class PacketCreator {
         setHeader(creator, PacketId.Server.PLAYER_LEFT);
         creator.write(connId);
     }
+
+    public static void pong(DataCreator creator){
+        setHeader(creator, PacketId.Server.PONG);
+    }
 }
