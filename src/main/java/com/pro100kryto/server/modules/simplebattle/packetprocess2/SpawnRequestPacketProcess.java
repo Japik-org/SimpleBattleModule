@@ -35,7 +35,7 @@ public class SpawnRequestPacketProcess extends PacketProcess{
         try {
             final DataCreator creator = newPacket.getDataCreator();
 
-            PacketCreator.confirmRespawn(creator, spawnPoint);
+            PacketCreator.respawn(creator, player.getConnectionInfo().getConnId(), spawnPoint);
 
             callback.getSender().sendPacketAndRecycle(newPacket);
         } catch (Throwable throwable){

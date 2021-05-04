@@ -31,8 +31,9 @@ public final class PacketCreator {
         return iteratePlayers;
     }
 
-    public static void confirmRespawn(DataCreator creator, Vector3f spawnPoint){
+    public static void respawn(DataCreator creator, int connId, Vector3f spawnPoint){
         setHeader(creator, PacketId.Server.SPAWN);
+        creator.write(connId);
         creator.write(spawnPoint.x, spawnPoint.y, spawnPoint.z);
     }
 
