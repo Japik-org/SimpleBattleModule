@@ -61,26 +61,24 @@ public class IteratedPlayersData {
 
         player.getLocker().lock();
 
-        writeVector(player.getBodyPos());
-        writeVector(player.getBodySpeed());
-        writeVector(player.getBodyAccel());
+        writeVector(creatorPositions, player.getBodyPos());
+        writeVector(creatorPositions, player.getBodySpeed());
+        writeVector(creatorPositions, player.getBodyAccel());
 
-        writeVector(player.getBodyAngle());
-        writeVector(player.getBodyRotSpeed());
-        writeVector(player.getBodyRotAccel());
+        writeVector(creatorPositions, player.getBodyAngle());
+        writeVector(creatorPositions, player.getBodyRotSpeed());
+        writeVector(creatorPositions, player.getBodyRotAccel());
 
-        writeVector(player.getGunAngle());
-        writeVector(player.getGunRotSpeed());
-        writeVector(player.getGunRotAccel());
+        writeVector(creatorPositions, player.getGunAngle());
+        writeVector(creatorPositions, player.getGunRotSpeed());
+        writeVector(creatorPositions, player.getGunRotAccel());
 
         player.getLocker().unlock();
 
         playersCount++;
     }
 
-    private void writeVector(final Vector3f v3f){
-        creatorPositions.write(v3f.x);
-        creatorPositions.write(v3f.y);
-        creatorPositions.write(v3f.z);
+    private void writeVector(final DataCreator creator, final Vector3f v3f){
+        creator.write(v3f.x, v3f.y, v3f.z);
     }
 }

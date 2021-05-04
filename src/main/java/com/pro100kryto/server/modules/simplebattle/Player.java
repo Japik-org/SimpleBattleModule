@@ -150,6 +150,6 @@ public class Player {
     }
 
     public float damage(float amount){
-        return hp-=amount;
+        return (hp = Math.max(0, hp - amount));
     }
 }
