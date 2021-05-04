@@ -1,4 +1,4 @@
-package com.gvargame.server.modules.simplebattle;
+package com.pro100kryto.server.modules.simplebattle;
 
 
 import org.eclipse.collections.api.block.procedure.Procedure;

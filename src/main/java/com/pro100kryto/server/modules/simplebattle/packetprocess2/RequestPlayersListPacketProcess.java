@@ -1,17 +1,17 @@
-package com.gvargame.server.modules.simplebattle.packetprocess2;
+package com.pro100kryto.server.modules.simplebattle.packetprocess2;
 
-import com.gvargame.server.modules.simplebattle.Player;
-import com.gvargame.server.modules.simplebattle.packet.PacketCreator;
 import com.pro100kryto.server.logger.ILogger;
+import com.pro100kryto.server.modules.simplebattle.Player;
+import com.pro100kryto.server.modules.simplebattle.packet.PacketCreator;
 import com.pro100kryto.server.utils.datagram.packets.DataCreator;
 import com.pro100kryto.server.utils.datagram.packets.DataReader;
 import com.pro100kryto.server.utils.datagram.packets.IPacket;
 import com.pro100kryto.server.utils.datagram.packets.IPacketInProcess;
 
-public class RequestPlayerPositionsPacketProcess extends PacketProcess{
+public class RequestPlayersListPacketProcess extends PacketProcess{
 
 
-    protected RequestPlayerPositionsPacketProcess(IPacketProcessCallback callback, ILogger logger) {
+    public RequestPlayersListPacketProcess(IPacketProcessCallback callback, ILogger logger) {
         super(callback, logger);
     }
 
@@ -25,7 +25,7 @@ public class RequestPlayerPositionsPacketProcess extends PacketProcess{
         try {
             final DataCreator creator = newPacket.getDataCreator();
 
-            PacketCreator.playerPositions(creator);
+            PacketCreator.playersList(creator);
 
             callback.getSender().sendPacketAndRecycle(newPacket);
         } catch (Throwable throwable){

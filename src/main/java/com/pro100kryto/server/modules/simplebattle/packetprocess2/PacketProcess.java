@@ -1,9 +1,9 @@
-package com.gvargame.server.modules.simplebattle.packetprocess2;
+package com.pro100kryto.server.modules.simplebattle.packetprocess2;
 
-import com.gvargame.server.modules.simplebattle.MsgErrorCode;
-import com.gvargame.server.modules.simplebattle.Player;
-import com.gvargame.server.modules.simplebattle.packet.PacketCreator;
 import com.pro100kryto.server.logger.ILogger;
+import com.pro100kryto.server.modules.simplebattle.MsgErrorCode;
+import com.pro100kryto.server.modules.simplebattle.Player;
+import com.pro100kryto.server.modules.simplebattle.packet.PacketCreator;
 import com.pro100kryto.server.utils.datagram.packetprocess2.IPacketProcess;
 import com.pro100kryto.server.utils.datagram.packets.*;
 
@@ -24,7 +24,7 @@ public abstract class PacketProcess implements IPacketProcess {
 
             final DataReader dataReader = packet.getDataReader();
             final Player player = callback.getPlayersArray().getPlayer(dataReader.readInt());
-            if (!player.getEndPoint().equals(packet.getEndPoint())){
+            if (!player.getConnectionInfo().getEndPoint().equals(packet.getEndPoint())){
                 sendMsgError(packet.getEndPoint(), MsgErrorCode.Unauthorized);
                 return;
             }

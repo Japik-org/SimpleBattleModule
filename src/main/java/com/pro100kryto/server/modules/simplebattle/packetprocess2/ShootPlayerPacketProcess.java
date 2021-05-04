@@ -1,9 +1,9 @@
-package com.gvargame.server.modules.simplebattle.packetprocess2;
+package com.pro100kryto.server.modules.simplebattle.packetprocess2;
 
-import com.gvargame.server.modules.simplebattle.Player;
-import com.gvargame.server.modules.simplebattle.packet.PacketCreator;
 import com.pro100kryto.server.logger.ILogger;
 import com.pro100kryto.server.modules.sender.connection.ISenderModuleConnection;
+import com.pro100kryto.server.modules.simplebattle.Player;
+import com.pro100kryto.server.modules.simplebattle.packet.PacketCreator;
 import com.pro100kryto.server.utils.datagram.packets.DataCreator;
 import com.pro100kryto.server.utils.datagram.packets.DataReader;
 import com.pro100kryto.server.utils.datagram.packets.IPacket;
@@ -11,10 +11,10 @@ import com.pro100kryto.server.utils.datagram.packets.IPacketInProcess;
 
 import javax.vecmath.Vector3f;
 
-public class ShootWallPacketProcess extends PacketProcess{
+public class ShootPlayerPacketProcess extends PacketProcess{
 
 
-    public ShootWallPacketProcess(IPacketProcessCallback callback, ILogger logger) {
+    public ShootPlayerPacketProcess(IPacketProcessCallback callback, ILogger logger) {
         super(callback, logger);
     }
 
@@ -32,10 +32,9 @@ public class ShootWallPacketProcess extends PacketProcess{
 
             final ISenderModuleConnection sender = callback.getSender();
             callback.getPlayersArray().iteratePlayers((p)->{
-                newPacket.setEndPoint(player.getEndPoint());
+                newPacket.setEndPoint(player.getConnectionInfo().getEndPoint());
                 sender.sendPacket(newPacket);
             });
-
             newPacket.recycle();
         } catch (Throwable throwable){
             newPacket.recycle();

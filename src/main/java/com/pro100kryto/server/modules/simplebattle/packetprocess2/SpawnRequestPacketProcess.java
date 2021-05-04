@@ -1,8 +1,8 @@
-package com.gvargame.server.modules.simplebattle.packetprocess2;
+package com.pro100kryto.server.modules.simplebattle.packetprocess2;
 
-import com.gvargame.server.modules.simplebattle.Player;
-import com.gvargame.server.modules.simplebattle.packet.PacketCreator;
 import com.pro100kryto.server.logger.ILogger;
+import com.pro100kryto.server.modules.simplebattle.Player;
+import com.pro100kryto.server.modules.simplebattle.packet.PacketCreator;
 import com.pro100kryto.server.utils.datagram.packets.DataCreator;
 import com.pro100kryto.server.utils.datagram.packets.DataReader;
 import com.pro100kryto.server.utils.datagram.packets.IPacket;

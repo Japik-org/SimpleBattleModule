@@ -1,33 +1,38 @@
-package com.gvargame.server.modules.simplebattle.packetprocess2;
+package com.pro100kryto.server.modules.simplebattle.packetprocess2;
 
-import com.gvargame.server.modules.simplebattle.Player;
-import com.gvargame.server.modules.simplebattle.packet.PacketCreator;
 import com.pro100kryto.server.logger.ILogger;
 import com.pro100kryto.server.modules.sender.connection.ISenderModuleConnection;
+import com.pro100kryto.server.modules.simplebattle.Player;
+import com.pro100kryto.server.modules.simplebattle.packet.PacketCreator;
 import com.pro100kryto.server.utils.datagram.packets.DataCreator;
 import com.pro100kryto.server.utils.datagram.packets.DataReader;
 import com.pro100kryto.server.utils.datagram.packets.IPacket;
 import com.pro100kryto.server.utils.datagram.packets.IPacketInProcess;
 
-public class KillSelfPacketProcess extends PacketProcess{
+import javax.vecmath.Vector3f;
+
+public class ShootWallPacketProcess extends PacketProcess{
 
 
-    public KillSelfPacketProcess(IPacketProcessCallback callback, ILogger logger) {
+    public ShootWallPacketProcess(IPacketProcessCallback callback, ILogger logger) {
         super(callback, logger);
     }
 
     @Override
     public void processPacket(IPacket packet, DataReader reader, Player player) throws Throwable {
-        if (player.getHp()<=0) return;
+
+        final Vector3f direction = readVector3f(reader);
+        final Vector3f intersection = readVector3f(reader);
+
         final IPacketInProcess newPacket = callback.getPacketPool().getNextPacket();
         try {
             final DataCreator creator = newPacket.getDataCreator();
 
-            PacketCreator.dead(creator, player.getConnId());
+            PacketCreator.shoot(creator, direction, intersection);
 
             final ISenderModuleConnection sender = callback.getSender();
             callback.getPlayersArray().iteratePlayers((p)->{
-                newPacket.setEndPoint(packet.getEndPoint());
+                newPacket.setEndPoint(player.getConnectionInfo().getEndPoint());
                 sender.sendPacket(newPacket);
             });
 

@@ -1,4 +1,4 @@
-package com.gvargame.server.modules.simplebattle.packet;
+package com.pro100kryto.server.modules.simplebattle.packet;
 
 public final class PacketId {
     public static final class Server{

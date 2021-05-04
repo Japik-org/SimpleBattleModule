@@ -1,4 +1,4 @@
-package com.gvargame.server.modules.simplebattle;
+package com.pro100kryto.server.modules.simplebattle;
 
 import com.pro100kryto.server.utils.datagram.packets.DataCreator;
 
@@ -56,8 +56,8 @@ public class IteratedPlayersData {
 
     public void readPlayer(Player player){
 
-        creatorList.write(player.getConnId());
-        creatorList.writeShortStrings(player.getNickname());
+        creatorList.write(player.getConnectionInfo().getConnId());
+        creatorList.writeShortStrings(player.getConnectionInfo().getNickname());
 
         player.getLocker().lock();
 

@@ -1,7 +1,7 @@
-package com.gvargame.server.modules.simplebattle.packet;
+package com.pro100kryto.server.modules.simplebattle.packet;
 
-import com.gvargame.server.modules.simplebattle.MsgErrorCode;
-import com.gvargame.server.modules.simplebattle.ProcedureIteratePlayers;
+import com.pro100kryto.server.modules.simplebattle.MsgErrorCode;
+import com.pro100kryto.server.modules.simplebattle.ProcedureIteratePlayers;
 import com.pro100kryto.server.utils.datagram.packets.DataCreator;
 
 import javax.vecmath.Vector3f;

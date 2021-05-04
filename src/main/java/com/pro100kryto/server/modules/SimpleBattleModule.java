@@ -1,12 +1,5 @@
-package com.gvargame.server.modules;
+package com.pro100kryto.server.modules;
 
-import com.gvargame.server.modules.simplebattle.BattleSimpleProcess;
-import com.gvargame.server.modules.simplebattle.PlayersArray;
-import com.gvargame.server.modules.simplebattle.ProcedureIteratePlayers;
-import com.gvargame.server.modules.simplebattle.Tick;
-import com.gvargame.server.modules.simplebattle.packet.PacketCreator;
-import com.gvargame.server.modules.simplebattle.packet.PacketId;
-import com.gvargame.server.modules.simplebattle.packetprocess2.*;
 import com.pro100kryto.server.StartStopStatus;
 import com.pro100kryto.server.logger.ILogger;
 import com.pro100kryto.server.module.AModuleConnection;
@@ -15,6 +8,12 @@ import com.pro100kryto.server.module.Module;
 import com.pro100kryto.server.modules.packetpool.connection.IPacketPoolModuleConnection;
 import com.pro100kryto.server.modules.receiverbuffered.connection.IReceiverBufferedModuleConnection;
 import com.pro100kryto.server.modules.sender.connection.ISenderModuleConnection;
+import com.pro100kryto.server.modules.simplebattle.*;
+import com.pro100kryto.server.modules.simplebattle.connection.ISimpleBattleModuleConnection;
+import com.pro100kryto.server.modules.simplebattle.connection.PlayerConnectionInfo;
+import com.pro100kryto.server.modules.simplebattle.packet.PacketCreator;
+import com.pro100kryto.server.modules.simplebattle.packet.PacketId;
+import com.pro100kryto.server.modules.simplebattle.packetprocess2.*;
 import com.pro100kryto.server.service.IServiceControl;
 import com.pro100kryto.server.utils.ServerUtils.IntCounterLocked;
 import com.pro100kryto.server.utils.datagram.objectpool.ObjectPool;
@@ -92,7 +91,7 @@ public class SimpleBattleModule extends Module implements IPacketProcessCallback
         stepTickMap.put(0, this::tick0);
         stepTickMap.put(1, this::tick1);
 
-        final int counterMaxValue = Integer.parseInt(settings.getOrDefault("", "1"));
+        final int counterMaxValue = Integer.parseInt(settings.getOrDefault("iterate-players-every-x-ticks", "1"));
         tickCounter = new IntCounterLocked(0, 0, counterMaxValue);
 
         moduleConnection = new SimpleBattleModuleConnection(logger, name, type);
@@ -166,10 +165,25 @@ public class SimpleBattleModule extends Module implements IPacketProcessCallback
 
 
 
-    private class SimpleBattleModuleConnection extends AModuleConnection{
+    private class SimpleBattleModuleConnection extends AModuleConnection implements ISimpleBattleModuleConnection {
 
         public SimpleBattleModuleConnection(ILogger logger, String moduleName, String moduleType) {
             super(logger, moduleName, moduleType);
+        }
+
+        @Override
+        public void connectPlayer(PlayerConnectionInfo connectionInfo){
+            playersArray.addPlayer(connectionInfo.getConnId(), new Player(connectionInfo));
+        }
+
+        @Override
+        public void disconnectPlayer(int connId){
+            playersArray.removePlayer(connId);
+        }
+
+        @Override
+        public boolean isConnectedPlayer(int connId) {
+            return playersArray.existsPlayer(connId);
         }
 
         @Override

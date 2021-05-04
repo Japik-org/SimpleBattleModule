@@ -1,16 +1,13 @@
-package com.gvargame.server.modules.simplebattle;
+package com.pro100kryto.server.modules.simplebattle;
 
-import com.pro100kryto.server.utils.datagram.packets.IEndPoint;
+import com.pro100kryto.server.modules.simplebattle.connection.PlayerConnectionInfo;
 
 import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Player {
-    private final int connId;
-    private final String nickname;
-    private final ConnectionRoles connectionRoles;
-    private final IEndPoint endPoint;
+    private final PlayerConnectionInfo connectionInfo;
 
     private float hp = -1;
     private Vector3f bodyPos;
@@ -25,16 +22,13 @@ public class Player {
 
     private final ReentrantLock locker = new ReentrantLock();
 
-    public Player(int connId, String nickname, ConnectionRoles connectionRoles, IEndPoint endPoint) {
-        this(connId, nickname, connectionRoles, endPoint, Vector3f.ZERO, Vector3f.ZERO, Vector3f.ZERO);
+    public Player(PlayerConnectionInfo connectionInfo) {
+        this(connectionInfo, Vector3f.ZERO, Vector3f.ZERO, Vector3f.ZERO);
     }
 
-    public Player(int connId, String nickname, ConnectionRoles connectionRoles, IEndPoint endPoint,
+    public Player(PlayerConnectionInfo connectionInfo,
                   final Vector3f bodyPos, final Vector3f bodyAngle, final Vector3f gunAngle) {
-        this.connId = connId;
-        this.nickname = nickname;
-        this.connectionRoles = connectionRoles;
-        this.endPoint = endPoint;
+        this.connectionInfo = connectionInfo;
         this.bodyPos = bodyPos;
         this.bodyAngle = bodyAngle;
         this.gunAngle = gunAngle;
@@ -86,8 +80,8 @@ public class Player {
     }
     */
 
-    public final int getConnId() {
-        return connId;
+    public PlayerConnectionInfo getConnectionInfo() {
+        return connectionInfo;
     }
 
     public Vector3f getBodySpeed() {
@@ -120,10 +114,6 @@ public class Player {
 
     public void setGunRotSpeed(Vector3f gunRotSpeed) {
         this.gunRotSpeed = gunRotSpeed;
-    }
-
-    public final String getNickname() {
-        return nickname;
     }
 
     public Vector3f getBodyRotAccel() {
@@ -161,13 +151,5 @@ public class Player {
 
     public float damage(float amount){
         return hp-=amount;
-    }
-
-    public ConnectionRoles getConnectionRoles() {
-        return connectionRoles;
-    }
-
-    public IEndPoint getEndPoint() {
-        return endPoint;
     }
 }

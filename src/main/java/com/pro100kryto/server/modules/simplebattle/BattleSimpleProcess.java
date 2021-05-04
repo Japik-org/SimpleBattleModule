@@ -1,6 +1,6 @@
-package com.gvargame.server.modules.simplebattle;
+package com.pro100kryto.server.modules.simplebattle;
 
-import com.gvargame.server.modules.simplebattle.packet.PacketHeaderInfo;
+import com.pro100kryto.server.modules.simplebattle.packet.PacketHeaderInfo;
 import com.pro100kryto.server.utils.datagram.objectpool.ObjectPool;
 import com.pro100kryto.server.utils.datagram.packetprocess2.IPacketProcess;
 import com.pro100kryto.server.utils.datagram.packetprocess2.ProcessPacketInThreadPool;
