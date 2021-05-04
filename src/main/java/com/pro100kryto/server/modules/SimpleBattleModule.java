@@ -19,7 +19,9 @@ import com.pro100kryto.server.utils.ServerUtils.IntCounterLocked;
 import com.pro100kryto.server.utils.datagram.objectpool.ObjectPool;
 import com.pro100kryto.server.utils.datagram.packetprocess2.IPacketProcess;
 import com.pro100kryto.server.utils.datagram.packetprocess2.ProcessorThreadPool;
+import com.pro100kryto.server.utils.datagram.packets.DataCreator;
 import com.pro100kryto.server.utils.datagram.packets.IPacket;
+import com.pro100kryto.server.utils.datagram.packets.IPacketInProcess;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,9 +30,9 @@ import java.util.Objects;
 
 public class SimpleBattleModule extends Module implements IPacketProcessCallback {
 
-    private IModuleConnectionSafe<IReceiverBufferedModuleConnection> receiverModuleConnection;
-    private IModuleConnectionSafe<IPacketPoolModuleConnection> packetPoolModuleConnection;
-    private IModuleConnectionSafe<ISenderModuleConnection> senderModuleConnection;
+    private IModuleConnectionSafe<IReceiverBufferedModuleConnection> receiverModuleConnectionSafe;
+    private IModuleConnectionSafe<IPacketPoolModuleConnection> packetPoolModuleConnectionSafe;
+    private IModuleConnectionSafe<ISenderModuleConnection> senderModuleConnectionSafe;
 
     private ProcessorThreadPool<BattleSimpleProcess> processor;
     private ObjectPool<BattleSimpleProcess> processesPool;
@@ -48,9 +50,9 @@ public class SimpleBattleModule extends Module implements IPacketProcessCallback
 
     @Override
     protected void startAction() throws Throwable {
-        packetPoolModuleConnection = initModuleConnection(settings.getOrDefault("packetpool-module-name", "packetPool"));
-        senderModuleConnection = initModuleConnection(settings.getOrDefault("sender-module-name", "sender"));
-        receiverModuleConnection = initModuleConnection(settings.getOrDefault("receiver-module-name", "receiver"));
+        packetPoolModuleConnectionSafe = initModuleConnection(settings.getOrDefault("packetpool-module-name", "packetPool"));
+        senderModuleConnectionSafe = initModuleConnection(settings.getOrDefault("sender-module-name", "sender"));
+        receiverModuleConnectionSafe = initModuleConnection(settings.getOrDefault("receiver-module-name", "receiver"));
 
         final Vector3f[] spawnPoints = new Vector3f[2];
         spawnPoints[0] = new Vector3f(0,10,10);
@@ -114,7 +116,7 @@ public class SimpleBattleModule extends Module implements IPacketProcessCallback
     // main thread
     private void tick0() throws Throwable{
         try {
-            final IPacket packet = receiverModuleConnection.getModuleConnection().getNextPacket();
+            final IPacket packet = receiverModuleConnectionSafe.getModuleConnection().getNextPacket();
             Objects.requireNonNull(packet);
 
             try {
@@ -149,13 +151,13 @@ public class SimpleBattleModule extends Module implements IPacketProcessCallback
     @Nullable
     @Override
     public IPacketPoolModuleConnection getPacketPool() {
-        return packetPoolModuleConnection.getModuleConnection();
+        return packetPoolModuleConnectionSafe.getModuleConnection();
     }
 
     @Nullable
     @Override
     public ISenderModuleConnection getSender() {
-        return senderModuleConnection.getModuleConnection();
+        return senderModuleConnectionSafe.getModuleConnection();
     }
 
     @Override
@@ -173,12 +175,43 @@ public class SimpleBattleModule extends Module implements IPacketProcessCallback
 
         @Override
         public void connectPlayer(PlayerConnectionInfo connectionInfo){
-            playersArray.addPlayer(connectionInfo.getConnId(), new Player(connectionInfo));
+            final Player player = new Player(connectionInfo);
+            playersArray.addPlayer(connectionInfo.getConnId(), player);
+
+            try {
+                final ISenderModuleConnection sender = senderModuleConnectionSafe.getModuleConnection();
+                final IPacketInProcess newPacket = packetPoolModuleConnectionSafe.getModuleConnection().getNextPacket();
+                final DataCreator creator = newPacket.getDataCreator();
+
+                PacketCreator.playerJoined(creator, player);
+
+                playersArray.iteratePlayers((p) -> {
+                    newPacket.setEndPoint(p.getConnectionInfo().getEndPoint());
+                    sender.sendPacket(newPacket);
+                });
+            } catch (Throwable throwable){
+                logger.writeException(throwable, "Failed send packet PLAYER_JOINED");
+            }
         }
 
         @Override
         public void disconnectPlayer(int connId){
             playersArray.removePlayer(connId);
+
+            try {
+                final ISenderModuleConnection sender = senderModuleConnectionSafe.getModuleConnection();
+                final IPacketInProcess newPacket = packetPoolModuleConnectionSafe.getModuleConnection().getNextPacket();
+                final DataCreator creator = newPacket.getDataCreator();
+
+                PacketCreator.playerLeft(creator, connId);
+
+                playersArray.iteratePlayers((p) -> {
+                    newPacket.setEndPoint(p.getConnectionInfo().getEndPoint());
+                    sender.sendPacket(newPacket);
+                });
+            } catch (Throwable throwable){
+                logger.writeException(throwable, "Failed send packet PLAYER_LEFT");
+            }
         }
 
         @Override
