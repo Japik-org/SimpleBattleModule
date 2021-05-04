@@ -1,6 +1,7 @@
 package com.pro100kryto.server.modules.simplebattle.packet;
 
 import com.pro100kryto.server.modules.simplebattle.MsgErrorCode;
+import com.pro100kryto.server.modules.simplebattle.Player;
 import com.pro100kryto.server.modules.simplebattle.ProcedureIteratePlayers;
 import com.pro100kryto.server.utils.datagram.packets.DataCreator;
 
@@ -55,5 +56,16 @@ public final class PacketCreator {
     public static void playersList(DataCreator creator) {
         setHeader(creator, PacketId.Server.PLAYERS_LIST);
         iteratePlayers.getIteratedPlayersData().writeCountAndPlayersList(creator);
+    }
+
+    public static void playerJoined(DataCreator creator, Player player){
+        setHeader(creator, PacketId.Server.PLAYER_JOINED);
+        creator.write(player.getConnectionInfo().getConnId());
+        creator.writeShortStrings(player.getConnectionInfo().getNickname());
+    }
+
+    public static void playerLeft(DataCreator creator, int connId){
+        setHeader(creator, PacketId.Server.PLAYER_LEFT);
+        creator.write(connId);
     }
 }
